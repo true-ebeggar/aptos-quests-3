@@ -23,10 +23,13 @@ def submit_and_log_transaction(account, payload, logger):
         txn = Rest_Client.submit_transaction(account, payload)
         Rest_Client.wait_for_transaction(txn)
         logger.info(f'Success: https://explorer.aptoslabs.com/txn/{txn}?network=mainnet')
+        return 0
     except AssertionError as e:
         logger.error(f"AssertionError caught: {e}")
+        return 1
     except Exception as e:
         logger.critical(f"An unexpected error occurred: {e}")
+        return 1
 
 
 def get_verified_collection_ids():
@@ -81,8 +84,9 @@ def made_topaz_bid(account, contract: str, name: str):
         ]
     }
 
-    submit_and_log_transaction(account, payload, logger)
-    logger.info(f"offer value: {amount / Z8} | offer duration: {hours}h. ")
+    logger.info(f"Offer value: {amount / Z8} | offer duration: {hours}h. ")
+    return submit_and_log_transaction(account, payload, logger)
+
 
 def get_available_free_mints():
 
@@ -126,4 +130,4 @@ def mint_free_mint(account, contract: str):
         ]
     }
 
-    submit_and_log_transaction(account, payload, logger)
+    return submit_and_log_transaction(account, payload, logger)
