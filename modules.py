@@ -1,12 +1,20 @@
 import random
+import time
 from datetime import datetime
 
 import json
 import requests
+from aptos_sdk.client import ClientConfig
 from aptos_sdk.client import RestClient
 
 from logger import setup_gay_logger
 
+Z8 = 10**8
+Z6 = 10**6
+
+ClientConfig.max_gas_amount = 100_00
+# This adjustment decreases the required balance for transaction execution.
+# It changes the upper limit for gas, avoiding trigger safety shut down.
 
 Rest_Client = RestClient("https://fullnode.mainnet.aptoslabs.com/v1")
 
@@ -45,16 +53,18 @@ def get_verified_collection_ids():
     verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
     return verified_collection_ids
 
-def made_topaz_bid(account, collection_id):
+def made_topaz_bid(account, contract: str, name: str):
     logger = setup_gay_logger('made_topaz_bid')
 
-    amount = random.randint(50000, 100000)
+    amount = random.randint(50, 100)
+    amount_str = str(amount) + '000'
+    amount = int(amount_str)
     hours = random.randint(2, 24)
 
     # Current Unix timestamp in microseconds
     current_unix_timestamp = int(datetime.utcnow().timestamp() * 1e6)
     # Convert hours to microseconds and subtract one hour in microseconds (required by topaz)
-    expiration_timestamp = current_unix_timestamp + ((hours - 1) * 3600 * 1e6)
+    expiration_timestamp = int(current_unix_timestamp + ((hours - 1) * 3600 * 1e6))
 
     payload = {
         "type": "entry_function_payload",
@@ -66,10 +76,10 @@ def made_topaz_bid(account, collection_id):
             str(amount),
             "1",
             str(expiration_timestamp),
-            "0xc46dd298b89d38314b486b2182a6163c4c955dce3509bf30751c307f5ecc2f36",
-            # This seems to be a placeholder value, replace with actual value as needed
-            "Pontem Space Pirates"  # This seems to be a placeholder value, replace with actual value as needed
+            contract,
+            name,
         ]
     }
 
-print(get_verified_collection_ids())
+    submit_and_log_transaction(account, payload, logger)
+    logger.info(f"offer value: {amount / Z8} | offer duration: {hours}. ")
