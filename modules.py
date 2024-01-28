@@ -82,4 +82,48 @@ def made_topaz_bid(account, contract: str, name: str):
     }
 
     submit_and_log_transaction(account, payload, logger)
-    logger.info(f"offer value: {amount / Z8} | offer duration: {hours}. ")
+    logger.info(f"offer value: {amount / Z8} | offer duration: {hours}h. ")
+
+def get_available_free_mints():
+
+    url = 'https://api.wapal.io/api/collection/editions?page=1&limit=20&edition=open-edition&isApproved=true'
+    headers = {
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Language': 'en-US,en;q=0.9',
+        'Origin': 'https://launchpad.wapal.io',
+        'Referer': 'https://launchpad.wapal.io/',
+        'Sec-Ch-Ua': '"Not_A Brand";v="8", "Chromium";v="120", "Opera";v="106"',
+        'Sec-Ch-Ua-Mobile': '?0',
+        'Sec-Ch-Ua-Platform': '"Windows"',
+        'Sec-Fetch-Dest': 'empty',
+        'Sec-Fetch-Mode': 'cors',
+        'Sec-Fetch-Site': 'same-site',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0'
+    }
+
+    response = requests.get(url, headers=headers)
+    response_json = response.json()
+
+    # Filter collections
+    available_collections = []
+    for item in response_json['data']:
+        if not item['status']['sold_out'] and item['candyMachine']['public_sale_price'] == 0 and item['candyMachine']['whitelist_price'] == 0:
+            collection_format = f"{item['candyMachine']['resource_account']}::{item['name']}"
+            available_collections.append(collection_format)
+
+    return available_collections
+
+def mint_free_mint(account, contract: str):
+    logger = setup_gay_logger('mint_free_mint')
+
+    payload = {
+        "type": "entry_function_payload",
+        "function": "0x6547d9f1d481fdc21cd38c730c07974f2f61adb7063e76f9d9522ab91f090dac::candymachine::mint_script",
+        "type_arguments": [],
+        "arguments": [
+            contract
+        ]
+    }
+
+    submit_and_log_transaction(account, payload, logger)
