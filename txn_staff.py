@@ -6,8 +6,6 @@ from aptos_sdk.client import RestClient
 
 from logger import setup_gay_logger
 
-Z8 = 10**8
-Z6 = 10**6
 
 ClientConfig.max_gas_amount = 100_00
 # This adjustment decreases the required balance for transaction execution.
@@ -57,7 +55,7 @@ def made_topaz_bid(account, contract: str, name: str):
         ]
     }
 
-    logger.info(f"Offer value: {amount / Z8} | offer duration: {hours}h. ")
+    logger.info(f"Offer value: {amount / 10**8} | offer duration: {hours}h. ")
     return submit_and_log_transaction(account, payload, logger)
 
 

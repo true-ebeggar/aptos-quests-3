@@ -4,14 +4,16 @@ import time
 from aptos_sdk.client import ClientConfig
 from aptos_sdk.account import Account
 from logger import setup_gay_logger
-from modules import made_topaz_bid, mint_free_nft
+from txn_staff import made_topaz_bid, mint_free_nft
 from utils import (
     get_verified_collection_ids,
     get_available_free_mints,
     delete_line_from_file)
 
-MIN_SLEEP = 120
-MAX_SLEEP = 160
+from config import (MIN_SLEEP,
+                    MAX_SLEEP,
+                    KEY)
+
 Z8 = 10**8
 Z6 = 10**6
 
@@ -64,15 +66,17 @@ def process_key(key):
     return 0
 
 # Main logic
-with open('pkey.txt', 'r') as file:
-    pkeys = file.readlines()
+with open(KEY, 'r') as file:
+    keys = file.readlines()
 
-for pkey in pkeys:
-    pkey = pkey.strip()
+for key in keys:
+    key = key.strip()
     try:
-        result = process_key(pkey)
+        result = process_key(key)
         if result == 0:
-            delete_line_from_file('pkey.txt', pkey)
+            delete_line_from_file(KEY, key)
+        else:
+            continue
     except Exception:
         continue
     time.sleep(random.randint(MIN_SLEEP, MAX_SLEEP))

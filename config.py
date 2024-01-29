@@ -1,0 +1,5 @@
+MIN_SLEEP = 120
+MAX_SLEEP = 160
+
+SMART_PROXY_URL = ""
+KEY = 'pkey.txt'
