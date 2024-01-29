@@ -4,7 +4,11 @@ import time
 from aptos_sdk.client import ClientConfig
 from aptos_sdk.account import Account
 from logger import setup_gay_logger
-from modules import get_verified_collection_ids, made_topaz_bid, get_available_free_mints, mint_free_mint
+from modules import made_topaz_bid, mint_free_nft
+from utils import (
+    get_verified_collection_ids,
+    get_available_free_mints,
+    delete_line_from_file)
 
 MIN_SLEEP = 120
 MAX_SLEEP = 160
@@ -14,7 +18,7 @@ Z6 = 10**6
 config = ClientConfig()
 config.max_gas_amount = 100_00
 # This adjustment decreases the required balance for transaction execution.
-# It changes the upper limit for gas, avoiding triggering safety shut down.
+# It changes the upper limit for gas, avoiding triggering tx termination.
 
 def process_key(key):
     # Load the account using the provided key
@@ -52,23 +56,12 @@ def process_key(key):
     logger.info(f"Chosen free mint collection: {name1}")
 
     # Mint the chosen free mint
-    mint = mint_free_mint(account, )
+    mint = mint_free_nft(account, contract1)
     if mint == 1:
         return 1
 
     logger.info("Processing completed for account")
     return 0
-
-
-
-def delete_line_from_file(filename, line_to_delete):
-    with open(filename, 'r') as file:
-        lines = file.readlines()
-
-    with open(filename, 'w') as file:
-        for line in lines:
-            if line.strip("\n") != line_to_delete:
-                file.write(line)
 
 # Main logic
 with open('pkey.txt', 'r') as file:
