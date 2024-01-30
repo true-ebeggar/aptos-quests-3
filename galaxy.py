@@ -26,13 +26,10 @@ proxies = {
 # NLTK setup
 nltk.download('words', quiet=True)
 
-# Web3 and Galaxy API setup
-w3 = Web3(Web3.HTTPProvider('https://rpc.ankr.com/eth'))
 galaxy_query = 'https://graphigo.prd.galaxy.eco/query'
 
 class GalaxyAccountManager:
     def __init__(self, account_apt, account_evm):
-        self.w3 = Web3(Web3.HTTPProvider('https://rpc.ankr.com/eth'))
         self.account_apt = account_apt
         self.account_evm = account_evm
         self.galaxy_query = 'https://graphigo.prd.galaxy.eco/query'
@@ -276,9 +273,8 @@ class GalaxyAccountManager:
             # print(json.dumps(response.json(), indent=4))
 
             if response.status_code == 200:
-                user_info = response.json().get('data', {}).get('addressInfo', {})
                 logger.info("User info retrieval successful")
-                return user_info
+                return response.json()
             else:
                 logger.error(f"Failed to retrieve user info for address: {user_address}.\nResponse: {response.text}")
                 return None
@@ -296,6 +292,8 @@ class GalaxyAccountManager:
             logger.warning(f"{username} username is already taken. Retry...")
 
 if __name__ == "__main__":
+    # Web3 and Galaxy API setup
+    w3 = Web3(Web3.HTTPProvider('https://rpc.ankr.com/eth'))
     account_apt = Account.load_key('0x8a299c3285ba90b721732e4414299fa1deb3f7909c50010717d173bc6bc6b470')
     account_evm = w3.eth.account.from_key("0x9c16ee871c240a0165a184b69fc166cb540f9730f44124b95a84f7088b1e82af")
 
