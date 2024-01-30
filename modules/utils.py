@@ -58,7 +58,7 @@ def get_verified_collection_ids():
     verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
     return verified_collection_ids
 
-def create_headers(token):
+def galaxy_headers(token):
     headers = {
         "Accept": "*/*",
         "Accept-Encoding": "gzip, deflate, br",
