@@ -1,4 +1,5 @@
 import requests
+from pyuseragents import random as random_user_agent
 
 def get_available_free_mints():
 
@@ -56,6 +57,23 @@ def get_verified_collection_ids():
     data = response.json()
     verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
     return verified_collection_ids
+
+def create_headers(token):
+    headers = {
+        "Accept": "*/*",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Language": "en-GB,en;q=0.9",
+        "Authorization": token,
+        "Content-Type": "application/json",
+        "Origin": "https://galxe.com",
+        "Sec-Ch-Ua-Mobile": "?0",
+        "Sec-Ch-Ua-Platform": '"Windows"',
+        "Sec-Fetch-Dest": "empty",
+        "Sec-Fetch-Mode": "cors",
+        "Sec-Fetch-Site": "cross-site",
+        "User-Agent": str(random_user_agent())
+    }
+    return headers
 
 
 def delete_line_from_file(filename, line_to_delete):

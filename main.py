@@ -3,11 +3,10 @@ import time
 
 from aptos_sdk.client import ClientConfig
 from aptos_sdk.account import Account
-from logger import setup_gay_logger
-from txn_staff import made_topaz_bid, mint_free_nft
-from utils import (
+from modules.logger import setup_gay_logger
+from modules.txn_staff import made_topaz_bid, mint_free_nft
+from modules.utils import (
     get_verified_collection_ids,
-    get_available_free_mints,
     delete_line_from_file)
 
 from config import (MIN_SLEEP,
