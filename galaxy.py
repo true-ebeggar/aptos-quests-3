@@ -14,8 +14,14 @@ from nltk.corpus import words
 from web3 import Web3
 
 # Local imports
-from logger import setup_gay_logger
-from utils import galaxy_headers
+from modules.logger import setup_gay_logger
+from modules.utils import galaxy_headers
+from config import SMART_PROXY_URL
+
+proxies = {
+    'http': SMART_PROXY_URL,
+    'https': SMART_PROXY_URL
+}
 
 # NLTK setup
 nltk.download('words', quiet=True)
@@ -59,7 +65,7 @@ class GalaxyAccountManager:
                 "query": ("mutation UpdateUserAddress($input: UpdateUserAddressInput!) {"
                           "updateUserAddress(input: $input) { code message __typename }}")
             }
-            response = requests.post(galaxy_query, headers=headers, json=payload)
+            response = requests.post(galaxy_query, headers=headers, json=payload, proxies=proxies)
 
             if response.status_code == 200:
                 if 'errors' in response.json():
@@ -114,7 +120,7 @@ class GalaxyAccountManager:
                 "query": "mutation SignIn($input: Auth) { signin(input: $input) }"
             }
 
-            response = requests.post(self.galaxy_query, json=data)
+            response = requests.post(self.galaxy_query, json=data, proxies=proxies)
 
             if response.status_code == 200 and 'signin' in response.text:
                 signin = response.json()['data']['signin']
@@ -167,7 +173,7 @@ class GalaxyAccountManager:
                 "query": "mutation SignIn($input: Auth) {\n  signin(input: $input)\n}\n"
             }
 
-            response = requests.post(self.galaxy_query, json=data)
+            response = requests.post(self.galaxy_query, json=data, proxies=proxies)
 
             if response.status_code == 200 and 'signin' in response.text:
                 signin = response.json()['data']['signin']
@@ -209,7 +215,7 @@ class GalaxyAccountManager:
                 }
             }
 
-            response = requests.post(self.galaxy_query, headers=headers, json=payload)
+            response = requests.post(self.galaxy_query, headers=headers, json=payload, proxies=proxies)
             response_json = response.json()
 
             if 'data' in response_json and 'createNewAccount' in response_json['data']:
@@ -237,7 +243,7 @@ class GalaxyAccountManager:
                 }
             }
 
-            response = requests.post(self.galaxy_query, headers=headers, json=payload)
+            response = requests.post(self.galaxy_query, headers=headers, json=payload, proxies=proxies)
             response_json = response.json()
             is_username_existing = response_json.get('data', {}).get('usernameExist', None)
             return is_username_existing
@@ -265,7 +271,7 @@ class GalaxyAccountManager:
                             }
                         }"""
             }
-            response = requests.post(self.galaxy_query, headers=headers, json=payload)
+            response = requests.post(self.galaxy_query, headers=headers, json=payload, proxies=proxies)
 
             # print(json.dumps(response.json(), indent=4))
 
@@ -290,8 +296,8 @@ class GalaxyAccountManager:
             logger.warning(f"{username} username is already taken. Retry...")
 
 if __name__ == "__main__":
-    account_apt = Account.load_key('0xd36d6c639dade5778a0d4bd77e40d9da5913d79173af4960647fb8f4101c65a2')
-    account_evm = w3.eth.account.from_key("0x5f169098b15a1316ee2ffb38c5cf1dd0e85421c1def555eee07172501a920fca")
+    account_apt = Account.load_key('0x8a299c3285ba90b721732e4414299fa1deb3f7909c50010717d173bc6bc6b470')
+    account_evm = w3.eth.account.from_key("0x9c16ee871c240a0165a184b69fc166cb540f9730f44124b95a84f7088b1e82af")
 
     # Test for method of the GalaxyAccountManager
     manager = GalaxyAccountManager(account_apt, account_evm)
