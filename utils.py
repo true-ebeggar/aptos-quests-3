@@ -1,6 +1,11 @@
 import requests
 from pyuseragents import random as random_user_agent
+from config import SMART_PROXY_URL
 
+proxies = {
+    'http': SMART_PROXY_URL,
+    'https': SMART_PROXY_URL
+}
 def get_available_free_mints():
 
     url = 'https://api.wapal.io/api/collection/editions?page=1&limit=20&edition=open-edition&isApproved=true'
@@ -20,7 +25,7 @@ def get_available_free_mints():
                       'Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, proxies=proxies)
     response_json = response.json()
 
     # Filter collections
@@ -53,7 +58,7 @@ def get_verified_collection_ids():
                       '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0'
     }
 
-    response = requests.get(url, headers=headers)
+    response = requests.get(url, headers=headers, proxies=proxies)
     data = response.json()
     verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
     return verified_collection_ids

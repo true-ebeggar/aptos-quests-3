@@ -17,7 +17,6 @@ from galaxy import GalaxyAccountManager
 from config import (MIN_SLEEP,
                     MAX_SLEEP,
                     GOOGLE_FORM_URL,
-                    SMART_PROXY_URL
                     )
 
 config = ClientConfig()
@@ -25,14 +24,10 @@ config.max_gas_amount = 100_00
 # This adjustment decreases the required balance for transaction execution.
 # It changes the upper limit for gas, avoiding triggering tx termination.
 
-EXEL = "\data\data.xlsx"
+EXEL = "data.xlsx"
 df = pd.read_excel(EXEL, engine='openpyxl')
 w3 = Web3(Web3.HTTPProvider('https://rpc.ankr.com/eth'))
 
-proxies = {
-    'http': SMART_PROXY_URL,
-    'https': SMART_PROXY_URL
-}
 
 def process_key(index, evm_key, aptos_key, mail):
     # Load the account using the provided key
@@ -94,11 +89,11 @@ def process_key(index, evm_key, aptos_key, mail):
         }
 
         headers = {'User-Agent': random_user_agent()}
-        response = requests.post(url=GOOGLE_FORM_URL, data=value, headers=headers, proxies=proxies)
+        response = requests.post(url=GOOGLE_FORM_URL, data=value, headers=headers)
 
         if response.status_code == 200:
-            logger.success(f'Successfully fill google form')
-            logger.info("Processing completed for account")
+            logger.info(f'Successfully fill google form')
+            logger.info(f"Processing completed for account {index}")
             return 0
         else:
             logger.error(f'Error sending google form')
