@@ -33,7 +33,7 @@ def made_topaz_bid(account, contract: str, name: str):
     amount = random.randint(50, 100)
     amount_str = str(amount) + '000'
     amount = int(amount_str)
-    hours = random.randint(2, 24)
+    hours = random.randint(1, 24)
 
     # Current Unix timestamp in microseconds
     current_unix_timestamp = int(datetime.utcnow().timestamp() * 1e6)

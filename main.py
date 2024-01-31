@@ -1,5 +1,7 @@
 import random
 import time
+import calendar
+
 
 import requests
 from aptos_sdk.client import ClientConfig
@@ -8,9 +10,9 @@ import pandas as pd
 from web3 import Web3
 from pyuseragents import random as random_user_agent
 
-from modules.logger import setup_gay_logger
-from modules.txn_staff import made_topaz_bid, mint_free_nft
-from modules.utils import get_verified_collection_ids
+from logger import setup_gay_logger
+from txn_staff import made_topaz_bid, mint_free_nft
+from utils import get_verified_collection_ids
 from galaxy import GalaxyAccountManager
 from config import (MIN_SLEEP,
                     MAX_SLEEP,
@@ -23,7 +25,7 @@ config.max_gas_amount = 100_00
 # This adjustment decreases the required balance for transaction execution.
 # It changes the upper limit for gas, avoiding triggering tx termination.
 
-EXEL = "/data/data.xlsx"
+EXEL = "\data\data.xlsx"
 df = pd.read_excel(EXEL, engine='openpyxl')
 w3 = Web3(Web3.HTTPProvider('https://rpc.ankr.com/eth'))
 
@@ -32,7 +34,7 @@ proxies = {
     'https': SMART_PROXY_URL
 }
 
-def process_key(evm_key, aptos_key, mail):
+def process_key(index, evm_key, aptos_key, mail):
     # Load the account using the provided key
     account_apt = Account.load_key(aptos_key)
     account_evm = w3.eth.account.from_key(evm_key)
@@ -42,7 +44,7 @@ def process_key(evm_key, aptos_key, mail):
     address_apt = account_apt.address()
     address_evm = account_evm.address
 
-    logger = setup_gay_logger(f"Acc | {address_apt}")
+    logger = setup_gay_logger(f"Acc N{index} | {address_apt}")
     logger.info(f"Processing started")
 
     # Fetch verified collection IDs
@@ -81,30 +83,27 @@ def process_key(evm_key, aptos_key, mail):
     manager.create_new_account(token, 'EVM')
     manager.update_user_address(token)
     data = manager.get_basic_user_info(token, address_evm)
-    if data["data"]["addressInfo"]["hasAptosAddress"] is True:
 
-        url = GOOGLE_FORM_URL + '/formResponse?pli=1'
-        data = {
+    if data["data"]["addressInfo"]["hasAptosAddress"] is True:
+        timestamp = calendar.timegm(time.gmtime())
+
+        value = {
             "emailAddress": mail,
             "entry.908064693": address_apt,
-            "dlut": int(time.time() * 1000)
+            "dlut": timestamp
         }
 
         headers = {'User-Agent': random_user_agent()}
-        response = requests.post(url=url, data=data, headers=headers, proxies=proxies)
+        response = requests.post(url=GOOGLE_FORM_URL, data=value, headers=headers, proxies=proxies)
 
         if response.status_code == 200:
             logger.success(f'Successfully fill google form')
             logger.info("Processing completed for account")
             return 0
-
         else:
             logger.error(f'Error sending google form')
 
 
-
-
-# Main logic
 for index, row in df.iterrows():
     if pd.notna(row['Done?']):
         continue
@@ -114,7 +113,7 @@ for index, row in df.iterrows():
     mail = row['Mail']
 
     try:
-        result = process_key(evm_key, aptos_key, mail)
+        result = process_key(index, evm_key, aptos_key, mail)
         if result == 0:
             df.at[index, 'Done?'] = 1  # Mark as done
             time.sleep(random.randint(MIN_SLEEP, MAX_SLEEP))

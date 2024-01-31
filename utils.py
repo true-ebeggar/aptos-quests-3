@@ -74,13 +74,3 @@ def galaxy_headers(token):
         "User-Agent": str(random_user_agent())
     }
     return headers
-
-
-def delete_line_from_file(filename, line_to_delete):
-    with open(filename, 'r') as file:
-        lines = file.readlines()
-
-    with open(filename, 'w') as file:
-        for line in lines:
-            if line.strip("\n") != line_to_delete:
-                file.write(line)

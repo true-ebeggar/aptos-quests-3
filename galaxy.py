@@ -14,8 +14,8 @@ from nltk.corpus import words
 from web3 import Web3
 
 # Local imports
-from modules.logger import setup_gay_logger
-from modules.utils import galaxy_headers
+from logger import setup_gay_logger
+from utils import galaxy_headers
 from config import SMART_PROXY_URL
 
 proxies = {
@@ -25,8 +25,6 @@ proxies = {
 
 # NLTK setup
 nltk.download('words', quiet=True)
-
-galaxy_query = 'https://graphigo.prd.galaxy.eco/query'
 
 class GalaxyAccountManager:
     def __init__(self, account_apt, account_evm):
@@ -62,7 +60,7 @@ class GalaxyAccountManager:
                 "query": ("mutation UpdateUserAddress($input: UpdateUserAddressInput!) {"
                           "updateUserAddress(input: $input) { code message __typename }}")
             }
-            response = requests.post(galaxy_query, headers=headers, json=payload, proxies=proxies)
+            response = requests.post(self.galaxy_query, headers=headers, json=payload, proxies=proxies)
 
             if response.status_code == 200:
                 if 'errors' in response.json():
