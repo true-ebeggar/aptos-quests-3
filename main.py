@@ -111,6 +111,7 @@ for index, row in df.iterrows():
         result = process_key(index, evm_key, aptos_key, mail)
         if result == 0:
             df.at[index, 'Done?'] = 1  # Mark as done
+            df.to_excel(EXEL, index=False)
             time.sleep(random.randint(MIN_SLEEP, MAX_SLEEP))
         else:
             continue
