@@ -58,10 +58,19 @@ def get_verified_collection_ids():
                       '(KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0'
     }
 
-    response = requests.get(url, headers=headers, proxies=proxies)
-    data = response.json()
-    verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
-    return verified_collection_ids
+    max_retries = 10  # Maximum number of retries
+    for attempt in range(max_retries):
+        try:
+            response = requests.get(url, headers=headers, proxies=proxies)
+            response.raise_for_status()  # Raises an HTTPError if the HTTP request returned an unsuccessful status code
+            data = response.json()
+            verified_collection_ids = {item['collection_id'] for item in data['data'] if item['verified']}
+            return verified_collection_ids
+        except requests.RequestException as e:
+            if attempt == max_retries - 1:
+                raise  # Re-raise the last exception if all attempts fail
+            print(f"Attempt {attempt + 1} failed, retrying...")
+    return set()  # Return an empty set if all retries fail
 
 def galaxy_headers(token):
     headers = {
