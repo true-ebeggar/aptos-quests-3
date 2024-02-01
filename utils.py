@@ -44,7 +44,7 @@ def get_verified_collection_ids():
 
     headers = {
         'Accept': '*/*',
-        'Accept-Encoding': 'gzip, deflate, br',
+        'Accept-Encoding': 'gzip',
         'Accept-Language': 'en-US,en;q=0.9',
         'Origin': 'https://www.topaz.so',
         'Referer': 'https://www.topaz.so/',
