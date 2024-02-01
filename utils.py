@@ -75,7 +75,7 @@ def get_verified_collection_ids():
 def galaxy_headers(token):
     headers = {
         "Accept": "*/*",
-        "Accept-Encoding": "gzip, deflate, br",
+        "Accept-Encoding": "gzip",
         "Accept-Language": "en-GB,en;q=0.9",
         "Authorization": token,
         "Content-Type": "application/json",
