@@ -15,9 +15,7 @@ from txn_staff import made_topaz_bid, mint_free_nft
 from utils import get_verified_collection_ids
 from galaxy import GalaxyAccountManager
 from config import (MIN_SLEEP,
-                    MAX_SLEEP,
-                    GOOGLE_FORM_URL,
-                    )
+                    MAX_SLEEP)
 
 config = ClientConfig()
 config.max_gas_amount = 100_00
@@ -80,23 +78,9 @@ def process_key(index, evm_key, aptos_key, mail):
     data = manager.get_basic_user_info(token, address_evm)
 
     if data["data"]["addressInfo"]["hasAptosAddress"] is True:
-        timestamp = calendar.timegm(time.gmtime())
-
-        value = {
-            "emailAddress": mail,
-            "entry.908064693": address_apt,
-            "dlut": timestamp
-        }
-
-        headers = {'User-Agent': random_user_agent()}
-        response = requests.post(url=GOOGLE_FORM_URL, data=value, headers=headers)
-
-        if response.status_code == 200:
-            logger.info(f'Successfully fill google form')
-            logger.info(f"Processing completed for account {index}")
-            return 0
-        else:
-            logger.error(f'Error sending google form')
+        logger.info(f"Processing completed for account {index}")
+        logger.info("You need to run separate script (fill_form.py) for google form filling...")
+        return 0
 
 
 for index, row in df.iterrows():

@@ -175,13 +175,13 @@ class GalaxyAccountManager:
                 logger.info('Got the signIn token')
                 return signin
             else:
-                logger.error(f"{apt_address.address} Login failed."
+                logger.error(f"{apt_address} Login failed."
                              f"\nResponse code: {response.status_code}."
                              f"\nResponse content {response.content}")
                 return None
 
         except Exception as e:
-            logger.critical(f"{apt_address.address} Login failed."
+            logger.critical(f"{apt_address} Login failed."
                             f"\nException: {e}")
             return None
     def _get_address(self, address_type):

@@ -30,7 +30,7 @@ def submit_and_log_transaction(account, payload, logger):
 def made_topaz_bid(account, contract: str, name: str):
     logger = setup_gay_logger('made_topaz_bid')
 
-    amount = random.randint(50, 100)
+    amount = random.randint(200, 300)
     amount_str = str(amount) + '000'
     amount = int(amount_str)
     hours = random.randint(1, 24)
