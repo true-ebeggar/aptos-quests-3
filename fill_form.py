@@ -60,6 +60,7 @@ chrome_options.add_argument('start-maximized')
 chrome_options.add_argument(f'--load-extension={extension_dir}')
 
 driver = webdriver.Chrome(options=chrome_options)
+driver.get(GOOGLE_FORM_URL)
 
 for index, row in df.iterrows():
     if row['Done?'] == 1:
@@ -80,5 +81,11 @@ for index, row in df.iterrows():
                 logger.warning(f"Form submission failed for {mail}")
                 continue
         except Exception as e:
+            try:
+                driver.close()
+            except Exception:
+                pass
+            driver = webdriver.Chrome(options=chrome_options)
             logger.error(f"Error processing row {index}: {e}")
             continue
+
