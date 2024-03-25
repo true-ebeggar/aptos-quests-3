@@ -40,37 +40,37 @@ def process_key(index, evm_key, aptos_key, mail):
     logger = setup_gay_logger(f"Acc N{index} | {address_apt}")
     logger.info(f"Processing started")
 
-    # Fetch verified collection IDs
-    verified_collection_ids = get_verified_collection_ids()
-    logger.info("Retrieved verified collection IDs")
-
-    # Choose a collection for bidding
-    chosen_collection_for_bid = random.choice(list(verified_collection_ids))
-    contract, name = chosen_collection_for_bid.split("::")
-    logger.info(f"Chosen collection for bid: {name}")
-
-    # Make a bid
-    bid = made_topaz_bid(account_apt, contract, name)
-    if bid == 1:
-        return 1
-
-    # Retrieve available free mints (currently out of use due to wapal.io page lags)
-    # free_mints = get_available_free_mints()
-    free_mints = [
-        '0xa79267255727285e55bc42d34134ffa2133b6983391846810d39f094fb5f1c87::Make Every M🌐ve Count.'
-    ]
-
-    # logger.info("Retrieved list of available free mints")
-
-    # Choose a free mint
-    chosen_free_mint = random.choice(list(free_mints))
-    contract1, name1 = chosen_free_mint.split("::")
-    logger.info(f"Chosen free mint collection: {name1}")
-
-    # Mint the chosen free mint
-    mint = mint_free_nft(account_apt, contract1)
-    if mint == 1:
-        return 1
+    # # Fetch verified collection IDs
+    # verified_collection_ids = get_verified_collection_ids()
+    # logger.info("Retrieved verified collection IDs")
+    #
+    # # Choose a collection for bidding
+    # chosen_collection_for_bid = random.choice(list(verified_collection_ids))
+    # contract, name = chosen_collection_for_bid.split("::")
+    # logger.info(f"Chosen collection for bid: {name}")
+    #
+    # # Make a bid
+    # bid = made_topaz_bid(account_apt, contract, name)
+    # if bid == 1:
+    #     return 1
+    #
+    # # Retrieve available free mints (currently out of use due to wapal.io page lags)
+    # # free_mints = get_available_free_mints()
+    # free_mints = [
+    #     '0xa79267255727285e55bc42d34134ffa2133b6983391846810d39f094fb5f1c87::Make Every M🌐ve Count.'
+    # ]
+    #
+    # # logger.info("Retrieved list of available free mints")
+    #
+    # # Choose a free mint
+    # chosen_free_mint = random.choice(list(free_mints))
+    # contract1, name1 = chosen_free_mint.split("::")
+    # logger.info(f"Chosen free mint collection: {name1}")
+    #
+    # # Mint the chosen free mint
+    # mint = mint_free_nft(account_apt, contract1)
+    # if mint == 1:
+    #     return 1
 
     token = manager.sign_in_evm()
     manager.create_new_account(token, 'EVM')
@@ -78,8 +78,8 @@ def process_key(index, evm_key, aptos_key, mail):
     data = manager.get_basic_user_info(token, address_evm)
 
     if data["data"]["addressInfo"]["hasAptosAddress"] is True:
-        logger.info(f"Processing completed for account {index}")
-        logger.info("You need to run separate script (fill_form.py) for google form filling...")
+        logger.info(f"Processing completed for account {address_apt}")
+        logger.info('It now registered on galaxy')
         return 0
 
 
